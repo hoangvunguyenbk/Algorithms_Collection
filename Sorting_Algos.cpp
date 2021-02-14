@@ -1,39 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
-#include <functional>
+#include <thread>
+
+#define START_TIMER(start) std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now(); 
+
+#define END_TIMER(duration, start) auto duration = std::chrono::high_resolution_clock::now() - start; \
+							std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << endl;
 
 using namespace std;
-
-class MeasureExecutionTimeSorting {
-
-private:
-	std::chrono::high_resolution_clock::time_point m_begin;
-	std::function<void(std::vector<int> &)> m_f1;
-	std::function<void(std::vector<int> &, int, int)> m_f2;
-	std::string m_caller;
-
-public:
-
-	MeasureExecutionTimeSorting(const std::string &caller, std::function<void(std::vector<int> &)> algo_func, std::vector<int> &data)
-	: m_caller(caller), m_f1(algo_func), m_begin(std::chrono::high_resolution_clock::now()) {
-
-		//std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(m_begin);
-		m_f1(data);
-	}
-
-	MeasureExecutionTimeSorting(const std::string &caller, std::function<void(std::vector<int> &, int, int)> algo_func, std::vector<int> &data, int start, int end)
-	: m_caller(caller), m_f2(algo_func), m_begin(std::chrono::high_resolution_clock::now()) {
-
-		m_f2(data, start, end);
-	}
-
-	~MeasureExecutionTimeSorting() {
-		std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-		auto duration = end - m_begin;
-		cout << m_caller << " : " << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << " ms\n";
-	}
-};
 
 /*********************
 	Insertion sort
@@ -43,7 +18,7 @@ worse-case: O(n2)
 average-case: O(n2)
 **********************/
 
-void InsertionSort(std::vector<int> &vec){
+void InsertionSort(std::vector<int> vec){
 
 	for(int i=1; i<vec.size(); ++i){
 		int hole = i;
@@ -83,7 +58,7 @@ int Partition(std::vector<int> &vec, int start, int end) {
 	return pIndex;
 }
 
-void QuickSort(std::vector<int> &vec, int start, int end) {
+void QuickSort(std::vector<int> vec, int start, int end) {
 
 	if(start<end){
 
@@ -160,66 +135,65 @@ void MergeSort(std::vector<int> vec, int start, int end) {
 		//merge 2 parts
 		Merge(vec, start, end, mid);
 	}
-
 }
-
-
-
-
-/*********************
-	Shell sort
-
-best-case: 
-worse-case:
-average-case:
-**********************/
-
 
 
 /*********************
 	Selection sort
 
-best-case: 
-worse-case:
-average-case:
+best-case: O(n2)
+worse-case: O(n2)
+average-case: O(n2)
 **********************/
+void SelectionSort(std::vector<int> vec)  
+{  
+    int i, j, min_idx;
+    int n = vec.size();  
+  
+    // One by one move boundary of unsorted subarray  
+    for (i = 0; i < n-1; i++)  
+    {  
+        // Find the minimum element in unsorted array  
+        min_idx = i;  
+        for (j = i+1; j < n; j++)  
+        if (vec[j] < vec[min_idx])  
+            min_idx = j;  
+  
+        // Swap the found minimum element with the first element  
+        std::swap(vec[min_idx], vec[i]);  
+    }  
+}
 
-
-
-/*********************
-	Heap sort
-
-best-case: 
-worse-case:
-average-case:
-**********************/
 
 int main(int argc, char** argv) {
 
 	//Large input data, pass to Constructor by value to use for different algo.
-	vector<int> data, data1;
+	vector<int> data;
 	for(unsigned short i = 20000; 0 < i; --i) {
 		data.push_back(i);
-		data1.push_back(i);
 	}
 
 	cout << "Sorting vector integer " << "[" << 20000 << " : " << 1 << "]\n";
 
-	//MeasureExecutionTimeSorting insertion_sort("Insertion sort", InsertionSort, data);
-	//MeasureExecutionTimeSorting insertion_sort1("Insertion sort 1", InsertionSort, data);
-	std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
-	MeasureExecutionTimeSorting quick_sort("Quick sort", QuickSort, data, 0, data.size()-1);
-	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << endl;
+	START_TIMER(timer1)
+	InsertionSort(data);
+	cout << "InsertionSort: ";
+	END_TIMER(duration1, timer1)
 
-	//std::chrono::high_resolution_clock::time_point start1 = std::chrono::high_resolution_clock::now();
-	//MeasureExecutionTimeSorting quick_sort1("Quick sort 1", QuickSort, data1, 0, data1.size()-1);
-	//std::chrono::high_resolution_clock::time_point end1 = std::chrono::high_resolution_clock::now();
-	//std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count() << endl;
-	//MeasureExecutionTimeSorting quick_sort1("Quick sort 1", QuickSort, data, 0, data.size()-1);
+	START_TIMER(timer2)
+	QuickSort(data, 0, data.size()-1);
+	cout << "QuickSort: ";
+	END_TIMER(duration2, timer2)
 
-	//MeasureExecutionTimeSorting merge_sort("MergeSort sort", MergeSort, data, 0, data.size()-1);
-	//MeasureExecutionTimeSorting merge_sort1("MergeSort sort 1", MergeSort, data, 0, data.size()-1);
+	START_TIMER(timer3)
+	MergeSort(data, 0, data.size()-1);
+	cout << "MergeSort: ";
+	END_TIMER(duration3, timer3)
+
+	START_TIMER(timer4)
+	SelectionSort(data);
+	cout << "SelectionSort: ";
+	END_TIMER(duration4, timer4)
 
 	return 0;
 }

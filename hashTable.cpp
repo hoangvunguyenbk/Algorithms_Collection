@@ -5,6 +5,7 @@
  * -----------------------*/
 #include <iostream>
 #include <bits/stdc++.h>
+
 #define HASH_ARRAY_SIZE 20
 
 using namespace std;
@@ -12,6 +13,7 @@ using namespace std;
 template<typename Key, typename Value>
 //Hashnode class
 class HashNode{
+
 	public:
 		HashNode(Key key, Value value){
 			this->m_key = key;
@@ -26,12 +28,12 @@ class HashNode{
 		}
 	private:
 		Key m_key;
-		Value m_value;
-	
+		Value m_value;	
 };
 
 template<typename Key, typename Value>
 class HashMap{
+
 	public:
 		//Constructor
 		HashMap();
@@ -47,11 +49,11 @@ class HashMap{
 		HashNode<Key, Value>* dummy;
 		int capacity;
 		int currentSize;
-
-
 };
+
 template<typename Key, typename Value>
-HashMap<Key, Value>::HashMap(){
+HashMap<Key, Value>::HashMap() {
+
 	//Init capacity of hash array
 	capacity = HASH_ARRAY_SIZE;
 	currentSize = 0;
@@ -67,12 +69,14 @@ HashMap<Key, Value>::HashMap(){
 //hash function
 template<typename Key, typename Value>
 int HashMap<Key, Value>::hashCode(Key key){
+
 	return key%capacity;
 }
 
 //Insert hash node
 template<typename Key, typename Value>
 void HashMap<Key, Value>::insertNode(Key key, Value value){
+
 		HashNode<Key, Value>* temp = new HashNode<Key, Value>(key, value);
 		//Calculate hash index
 		int hashIndex = HashMap::hashCode(key);
@@ -94,8 +98,10 @@ void HashMap<Key, Value>::insertNode(Key key, Value value){
 		//arr[hashIndex] = temp;
 		//std::cout<<hashIndex;
 }
+
 template<typename Key, typename Value>
 void HashMap<Key, Value>::removeNode(Key key){
+
 	//Calculate hash index
 	int hashIndex = HashMap::hashCode(key);
 
@@ -112,8 +118,10 @@ void HashMap<Key, Value>::removeNode(Key key){
 		hashIndex%capacity;		
 	}
 }
+
 template<typename Key, typename Value>
 Value HashMap<Key, Value>::searchValue(Key key){
+
 	//Calculate hash index
 	int hashIndex = HashMap::hashCode(key);
 	//find node with given key
@@ -127,6 +135,7 @@ Value HashMap<Key, Value>::searchValue(Key key){
 //display all element stored in table
 template<typename Key, typename Value>
 void HashMap<Key, Value>::display(){
+	
 	std::cout << "**** HASH TABLE **** "<< std::endl;
 	for(int i=0;i<=capacity; i++){
 		if(arr[i]!=NULL && arr[i]->getKey()!=-1){

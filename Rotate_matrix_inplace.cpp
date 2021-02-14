@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 
-
-
 using namespace std;
 
 typedef std::vector<std::vector<int>> matrix;
@@ -20,7 +18,8 @@ new position:      a[row3][col3] -- a[row][col] -- a[row1][col1] -- a[row2][col2
 -> can use 3 swap statement to achieve and only iterate through 1/4 of the matrix.
 ----------------------------------------------*/
 
-matrix rotate_90_clockwise(matrix& a){
+matrix Rotate_90_clockwise(matrix& a){
+
 	int n = a.size();
 	for(int i=0; i<n; i++){
 		for(int j=i; j<n-1-i; j++){
@@ -29,11 +28,11 @@ matrix rotate_90_clockwise(matrix& a){
 			std::swap(a[i][j], a[n-1-j][i]);
 		}
 	}
-	cout << "---------Rotated---------" <<endl;
 	return a;
 }
 
-void printMatrix(matrix a){
+void PrintMatrix(const matrix a){
+
 	for(int i=0; i<a.size(); i++){
 		for(int j=0; j<a[0].size(); j++){
 			std::cout << a[i][j] << " ";
@@ -45,18 +44,22 @@ void printMatrix(matrix a){
 
 
 int main(){
+
     std::vector<int> v(5,0);
 	matrix a(5, v);
 	int count=0;
+
 	for(int i=0; i<a.size(); i++){
 		for(int j=0; j<a[0].size(); j++){
 			a[i][j] = count++;
 		}
-		std::cout << endl;
 	}
-	cout << "--------Origina----------" << endl;
-	printMatrix(a);
-	rotate_90_clockwise(a);
-	printMatrix(a);
+
+	cout << "--------Original----------" << endl;
+	PrintMatrix(a);
+	Rotate_90_clockwise(a);
+
+	cout << "---------Rotated---------" <<endl;
+	PrintMatrix(a);
 	return 0;
 }
